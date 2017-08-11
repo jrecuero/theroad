@@ -67,3 +67,20 @@ def test_full_road(baseRoad, theLengths):
         assert baseRoad[i].Len == length
     for s, l in zip(baseRoad, theLengths):
         assert s.Len == l
+
+
+@pytest.mark.parametrize('thePos, theExpectation', [(5, 0), (15, 1), (67, 3), (2, 0), (81, 3)])
+def test_segmentAt(roadTest, thePos, theExpectation):
+    i, _ = roadTest.segmentAt(thePos)
+    assert i == theExpectation
+
+
+@pytest.mark.parametrize('theLimits', [(10, 20, 30, 50)])
+def test_segmentAt_full(roadTest, theLimits):
+    trav = 0
+    for ind, nextEnd in enumerate(theLimits):
+        for pos in range(trav, trav + nextEnd):
+            i, seg = roadTest.segmentAt(pos)
+            assert i == ind
+            assert seg['end'] == trav + nextEnd
+        trav += nextEnd

@@ -52,3 +52,8 @@ class Road(object):
         _ = self._segments[self._index]
         self._index += 1
         return _
+
+    def segmentAt(self, thePos):
+        for index, seg in self._road.items():
+            if thePos < seg['end']:
+                return index, seg
