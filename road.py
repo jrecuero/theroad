@@ -1,11 +1,19 @@
+from gear import Gear
+
+
 class Segment(object):
 
-    def __init__(self, theLength):
+    def __init__(self, theLength, theGear=Gear.DIRECT):
         self._length = theLength
+        self._gear = theGear
 
     @property
     def Len(self):
         return self._length
+
+    @property
+    def Gear(self):
+        return self._gear
 
 
 class Road(object):

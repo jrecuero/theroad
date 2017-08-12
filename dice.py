@@ -1,4 +1,5 @@
 import random
+from gear import Gear
 
 
 class Face(object):
@@ -13,12 +14,13 @@ class Face(object):
 
 class Dice(object):
 
-    def __init__(self, theNbrOfFaces, theFaces):
+    def __init__(self, theNbrOfFaces, theFaces, theGear=Gear.DIRECT):
         assert theNbrOfFaces == len(theFaces)
         assert type(theFaces) in (list, tuple)
         self.nbrFaces = theNbrOfFaces
         self.faces = theFaces
         self.selectedFace = None
+        self.gear = theGear
 
     def roll(self):
         index = random.randint(0, self.nbrFaces - 1)
@@ -34,12 +36,14 @@ class Dice(object):
 
 class DiceSet(object):
 
-    def __init__(self, theNbrOfDices, theDices):
+    def __init__(self, theNbrOfDices, theDices, theGear=Gear.DIRECT):
         assert theNbrOfDices == len(theDices)
         assert type(theDices) in (list, tuple)
+        assert all([dice.gear == theGear for dice in theDices])
         self.nbrFaces = theNbrOfDices
         self.dices = theDices
         self.selectedFaces = None
+        self.gear = theGear
 
     def roll(self):
         self.selectedFaces = []
@@ -52,3 +56,19 @@ class DiceSet(object):
         if self.selectedFaces is None:
             return self.selectedFaces
         return [face.Value for face in self.selectedFaces]
+
+
+class Collection(object):
+
+    def __init__(self):
+        self._collection = Gear.getDict()
+
+    @property
+    def Collection(self):
+        return self._collection
+
+    def addToCollection(self, theGear, theDiceSet):
+        self.Collection[theGear] = theDiceSet
+
+    def getDice(self, theGear):
+        return self.Collection[theGear]
