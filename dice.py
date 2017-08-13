@@ -57,6 +57,14 @@ class DiceSet(object):
             return self.selectedFaces
         return [face.Value for face in self.selectedFaces]
 
+    @property
+    def Result(self):
+        if self.selectedFaces is None:
+            return self.selectedFaces
+        result = DiceResult()
+        result.Value = sum(self.Value)
+        return result
+
 
 class Collection(object):
 
@@ -72,3 +80,17 @@ class Collection(object):
 
     def getDice(self, theGear):
         return self.Collection[theGear]
+
+
+class DiceResult(object):
+
+    def __init__(self):
+        self._value = 0
+
+    @property
+    def Value(self):
+        return self._value
+
+    @Value.setter
+    def Value(self, theValue):
+        self._value = theValue

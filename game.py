@@ -32,7 +32,7 @@ class Game(object):
         return self.Player.roll(g)
 
     def move(self):
-        pos = sum(self.roll())
+        pos = self.roll().Value
         self.Player.Pos += pos
         return self.Player.Pos
 

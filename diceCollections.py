@@ -1,8 +1,8 @@
-import Gear
+from gear import Gear
 from dice import Face, Dice, DiceSet, Collection
 
 
-def basicCollection(self):
+def basicCollection():
     _collection = Collection()
     _dice = Dice(6, [Face(1), Face(2), Face(3), Face(4), Face(5), Face(6)])
     _diceSet = DiceSet(3, [_dice, _dice, _dice])

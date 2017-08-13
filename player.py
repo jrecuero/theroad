@@ -1,4 +1,4 @@
-from collections import basicCollection
+from diceCollections import basicCollection
 
 
 class Player(object):
@@ -25,9 +25,9 @@ class Player(object):
         return self._collection
 
     def roll(self, theGear):
-        dice = self.Collection.getDice(theGear)
-        dice.roll()
-        return dice.Value
+        diceSet = self.Collection.getDice(theGear)
+        diceSet.roll()
+        return diceSet.Result
 
     def init(self):
         self._collection = basicCollection()
