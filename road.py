@@ -3,10 +3,11 @@ from gear import Gear
 
 class Segment(object):
 
-    def __init__(self, theLength, theWidth=2, theGear=Gear.DIRECT):
+    def __init__(self, theLength, **kwargs):
         self._length = theLength
-        self._width = theWidth
-        self._gear = theGear
+        self._width = kwargs.get("theWidth", 2)
+        self._height = kwargs.get("theHeight", 0)
+        self._gear = kwargs.get("theGear", Gear.DIRECT)
 
     @property
     def Len(self):
@@ -15,6 +16,10 @@ class Segment(object):
     @property
     def Width(self):
         return self._width
+
+    @property
+    def Height(self):
+        return self._height
 
     @property
     def Gear(self):
@@ -71,6 +76,16 @@ class Road(object):
             if thePos < seg['end']:
                 return index, seg
 
+    def widthAt(self, thePos):
+        for index, seg in self._road.items():
+            if thePos < seg['end']:
+                return index, seg.Width
+
+    def gearAt(self, thePos):
+        for index, seg in self._road.items():
+            if thePos < seg['end']:
+                return index, seg.Gear
+
 
 class RoadPos(object):
 
@@ -115,6 +130,24 @@ class RoadPos(object):
             else:
                 return self.__add__(thePos)
         return NotImplemented
+
+    def nextSideWidth(self, theWidth):
+        width, inc = (self.Width, 0) if self.Width < theWidth else (theWidth - 1, 1)
+        yield width, inc
+        plus, minus = True, True
+        for inc in range(1, theWidth):
+            if plus:
+                newWidth = width + inc
+                if newWidth < theWidth:
+                    yield newWidth, inc
+                else:
+                    plus = False
+            if minus:
+                newWidth = width - inc
+                if newWidth >= 0:
+                    yield newWidth, inc
+                else:
+                    minus = False
 
     def isStartPos(self):
         return self.Pos == 0 and self.Width == 0
