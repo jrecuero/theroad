@@ -1,11 +1,12 @@
 from diceCollections import basicCollection
+from road import RoadPos
 
 
 class Player(object):
 
-    def __init__(self, theName, thePos=0):
+    def __init__(self, theName, theRoadPos=None):
         self._name = theName
-        self._pos = thePos
+        self._roadPos = theRoadPos if theRoadPos else RoadPos()
         self._collection = None
 
     @property
@@ -13,12 +14,16 @@ class Player(object):
         return self._name
 
     @property
-    def Pos(self):
-        return self._pos
+    def RoadPos(self):
+        return self._roadPos
 
-    @Pos.setter
-    def Pos(self, thePos):
-        self._pos = thePos
+    @RoadPos.setter
+    def RoadPos(self, theRoadPos):
+        self._roadPos = theRoadPos
+
+    @property
+    def Pos(self):
+        return self.RoadPos.Pos
 
     @property
     def Collection(self):

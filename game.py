@@ -1,5 +1,6 @@
 import player
 from roadCollections import basicRoad
+from roadHandler import RoadHandler
 
 
 class Game(object):
@@ -8,18 +9,27 @@ class Game(object):
         self._road = None
         self._players = []
         self._nbfOfPlayers = theNbrOfPlayers
+        self._roadHandler = None
 
     @property
     def Road(self):
         return self._road
 
-    @property
-    def NbrOfPlayers(self):
-        return self._nbfOfPlayers
-
     @Road.setter
     def Road(self, theRoad):
         self._road = theRoad
+
+    @property
+    def RoadHandler(self):
+        return self._roadHandler
+
+    @RoadHandler.setter
+    def RoadHandler(self, theRoadHandler):
+        self._roadHandler = theRoadHandler
+
+    @property
+    def NbrOfPlayers(self):
+        return self._nbfOfPlayers
 
     def getPlayer(self, theIndex):
         return self._players[theIndex]
@@ -39,12 +49,18 @@ class Game(object):
 
     def move(self, thePlayer):
         pos = self.roll(thePlayer).Value
-        thePlayer.Pos += pos
-        return thePlayer.Pos
+        roadPos = thePlayer.RoadPos + pos
+        if self.RoadHandler.movePlayerToRoadPos(thePlayer, roadPos):
+            return thePlayer.RoadPos
+        else:
+            return None
 
     def init(self):
         self._createPlayers()
         self.Road = basicRoad()
+        self.RoadHandler = RoadHandler(self.Road)
+        for p in self._players:
+            self.RoadHandler.addPlayer(p)
 
 
 g = Game()
