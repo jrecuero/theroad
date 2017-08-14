@@ -4,12 +4,22 @@ from gear import Gear
 
 class Face(object):
 
-    def __init__(self, theValue):
+    def __init__(self, theValue, theGas=0, theTire=0):
         self._value = theValue
+        self._gas = theGas
+        self._tire = theTire
 
     @property
     def Value(self):
         return self._value
+
+    @property
+    def Gas(self):
+        return self._gas
+
+    @property
+    def Tire(self):
+        return self._tire
 
 
 class Dice(object):
@@ -29,9 +39,15 @@ class Dice(object):
 
     @property
     def Value(self):
-        if self.selectedFace is None:
-            return None
-        return self.selectedFace.Value
+        return self.selectedFace.Value if self.selectedFace else None
+
+    @property
+    def Gas(self):
+        return self.selectedFace.Gas if self.selectedFace else None
+
+    @property
+    def Tire(self):
+        return self.selectedFace.Tire if self.selectedFace else None
 
 
 class DiceSet(object):
@@ -53,16 +69,24 @@ class DiceSet(object):
 
     @property
     def Value(self):
-        if self.selectedFaces is None:
-            return self.selectedFaces
-        return [face.Value for face in self.selectedFaces]
+        return [face.Value for face in self.selectedFaces] if self.selectedFaces else None
+
+    @property
+    def Gas(self):
+        return [face.Gas for face in self.selectedFaces] if self.selectedFaces else None
+
+    @property
+    def Tire(self):
+        return [face.Tire for face in self.selectedFaces] if self.selectedFaces else None
 
     @property
     def Result(self):
         if self.selectedFaces is None:
-            return self.selectedFaces
+            return None
         result = DiceResult()
         result.Value = sum(self.Value)
+        result.Gas = sum(self.Gas)
+        result.Tire = sum(self.Tire)
         return result
 
 
@@ -86,6 +110,8 @@ class DiceResult(object):
 
     def __init__(self):
         self._value = 0
+        self._gas = 0
+        self._tire = 0
 
     @property
     def Value(self):
@@ -94,3 +120,19 @@ class DiceResult(object):
     @Value.setter
     def Value(self, theValue):
         self._value = theValue
+
+    @property
+    def Gas(self):
+        return self._gas
+
+    @Gas.setter
+    def Gas(self, theValue):
+        self._gas = theValue
+
+    @property
+    def Tire(self):
+        return self._tire
+
+    @Tire.setter
+    def Tire(self, theValue):
+        self._tire = theValue

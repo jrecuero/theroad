@@ -2,7 +2,7 @@ from road import Segment, Road
 from gear import Gear
 
 
-def basicRoad(self):
+def basicRoad():
     r = Road()
     r.addSegment(Segment(100, Gear.DIRECT))
     r.addSegment(Segment(50, Gear.TURN))

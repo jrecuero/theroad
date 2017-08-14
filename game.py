@@ -13,6 +13,10 @@ class Game(object):
     def Road(self):
         return self._road
 
+    @property
+    def NbrOfPlayers(self):
+        return self._nbfOfPlayers
+
     @Road.setter
     def Road(self, theRoad):
         self._road = theRoad
@@ -34,10 +38,17 @@ class Game(object):
         return thePlayer.roll(g)
 
     def move(self, thePlayer):
-        pos = self.roll().Value
+        pos = self.roll(thePlayer).Value
         thePlayer.Pos += pos
         return thePlayer.Pos
 
     def init(self):
         self._createPlayers()
         self.Road = basicRoad()
+
+
+g = Game()
+g.init()
+p = []
+for i in range(g.NbrOfPlayers):
+    p.append(g.getPlayer(i))
