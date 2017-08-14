@@ -1,12 +1,13 @@
-import road
 import player
+from roadCollections import basicRoad
 
 
 class Game(object):
 
-    def __init__(self):
+    def __init__(self, theNbrOfPlayers=3):
         self._road = None
-        self._player = player.Player('player')
+        self._players = []
+        self._nbfOfPlayers = theNbrOfPlayers
 
     @property
     def Road(self):
@@ -16,26 +17,27 @@ class Game(object):
     def Road(self, theRoad):
         self._road = theRoad
 
-    @property
-    def Player(self):
-        return self._player
+    def getPlayer(self, theIndex):
+        return self._players[theIndex]
 
-    def _createRoad(self):
-        self.Road = road.Road()
-        self.Road.addSegment(road.Segment(100))
+    def _createPlayers(self):
+        for i in range(self._nbfOfPlayers):
+            p = player.Player('player{0}'.format(i))
+            p.init()
+            self._players.append(p)
 
-    def roll(self):
-        pos = self.Player.Pos
+    def roll(self, thePlayer):
+        pos = thePlayer.Pos
         index, _ = self.Road.segmentAt(pos)
         segment = self.Road[index]
         g = segment.Gear
-        return self.Player.roll(g)
+        return thePlayer.roll(g)
 
-    def move(self):
+    def move(self, thePlayer):
         pos = self.roll().Value
-        self.Player.Pos += pos
-        return self.Player.Pos
+        thePlayer.Pos += pos
+        return thePlayer.Pos
 
     def init(self):
-        self.Player.init()
-        self._createRoad()
+        self._createPlayers()
+        self.Road = basicRoad()
