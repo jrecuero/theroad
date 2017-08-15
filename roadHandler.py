@@ -50,7 +50,7 @@ class RoadHandler(object):
 
     def advancePlayer(self, thePlayer, theAdvance):
         while True:
-            segmentWidth = self._road.widthAt(thePlayer.RoadPos.Pos + 1)
+            _, segmentWidth = self._road.widthAt(thePlayer.RoadPos.Pos + 1)
             for newWidth, advPos in thePlayer.RoadPos.nextSideWidth(segmentWidth):
                 newRoadPos = RoadPos(thePlayer.RoadPos.Pos + 1, newWidth)
                 if self.isFree(newRoadPos):

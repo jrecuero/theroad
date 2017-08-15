@@ -8,7 +8,7 @@ class Player(object):
         self._name = theName
         self._roadPos = kwargs.get('theRoadPos', RoadPos())
         self._user = kwargs.get('theUser', False)
-        self._ai = kwargs.get('theAi', True)
+        self._ai = kwargs.get('theAi', False if self.IsUser else True)
         assert self._user != self._ai
         self._collection = None
 
@@ -47,3 +47,7 @@ class Player(object):
 
     def init(self):
         self._collection = basicCollection()
+
+    def __repr__(self):
+        side = 'user' if self.IsUser else 'ai'
+        return '[{0}] {1} road: {2} | {3}'.format(side, self.Name, self.RoadPos.Pos, self.RoadPos.Width)

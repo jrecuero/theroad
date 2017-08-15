@@ -8,6 +8,13 @@ class Segment(object):
         self._width = kwargs.get("theWidth", 2)
         self._height = kwargs.get("theHeight", 0)
         self._gear = kwargs.get("theGear", Gear.DIRECT)
+        self._startAt = None
+        self._endAt = None
+
+    def placeInRoad(self, theStartAt, theEndAt):
+        assert theEndAt  - theStartAt == self.Len
+        self._startAt = theStartAt
+        self._endAt = theEndAt
 
     @property
     def Len(self):
@@ -25,21 +32,27 @@ class Segment(object):
     def Gear(self):
         return self._gear
 
+    @property
+    def StartAt(self):
+        return self._startAt
+
+    @property
+    def EndAt(self):
+        return self._endAt
+
 
 class Road(object):
 
     def __init__(self):
         self._index = 0
         self._segments = []
-        self._road = {}
         self._endAt = 0
 
     def addSegment(self, theSegment):
         assert type(theSegment) == Segment
         assert theSegment.Len > 0
         _ = self._endAt + theSegment.Len
-        segmentIndex = len(self._segments)
-        self._road[segmentIndex] = {'start': self._endAt, 'end': _}
+        theSegment.placeInRoad(self._endAt, _)
         self._endAt = _
         self._segments.append(theSegment)
 
@@ -71,19 +84,14 @@ class Road(object):
         self._index += 1
         return _
 
-    def segmentAt(self, thePos):
-        for index, seg in self._road.items():
-            if thePos < seg['end']:
-                return index, seg
-
     def widthAt(self, thePos):
-        for index, seg in self._road.items():
-            if thePos < seg['end']:
+        for index, seg in enumerate(self):
+            if thePos < seg.EndAt:
                 return index, seg.Width
 
     def gearAt(self, thePos):
-        for index, seg in self._road.items():
-            if thePos < seg['end']:
+        for index, seg in enumerate(self):
+            if thePos < seg.EndAt:
                 return index, seg.Gear
 
 

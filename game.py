@@ -36,24 +36,20 @@ class Game(object):
 
     def _createPlayers(self):
         for i in range(self._nbfOfPlayers):
-            p = player.Player('player{0}'.format(i))
+            p = player.Player('player{0}'.format(i), theUser=True if i == 0 else False)
             p.init()
             self._players.append(p)
 
     def roll(self, thePlayer):
         pos = thePlayer.Pos
-        index, _ = self.Road.segmentAt(pos)
-        segment = self.Road[index]
+        segment = self.Road[pos]
         g = segment.Gear
         return thePlayer.roll(g)
 
     def move(self, thePlayer):
         pos = self.roll(thePlayer).Value
-        roadPos = thePlayer.RoadPos + pos
-        if self.RoadHandler.movePlayerToRoadPos(thePlayer, roadPos):
-            return thePlayer.RoadPos
-        else:
-            return None
+        advLeft = self.RoadHandler.advancePlayer(thePlayer, pos)
+        return thePlayer.RoadPos, advLeft
 
     def init(self):
         self._createPlayers()
