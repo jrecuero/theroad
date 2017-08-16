@@ -1,7 +1,7 @@
 class Gear(object):
 
     DIRECT = 0
-    TURN = 0
+    TURN = 1
 
     @staticmethod
     def getDict():

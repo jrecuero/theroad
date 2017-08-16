@@ -30,12 +30,16 @@ class Dice(object):
         self.nbrFaces = theNbrOfFaces
         self.faces = theFaces
         self.selectedFace = None
-        self.gear = theGear
+        self._gear = theGear
 
     def roll(self):
         index = random.randint(0, self.nbrFaces - 1)
         self.selectedFace = self.faces[index]
         return self.selectedFace
+
+    @property
+    def Gear(self):
+        return self._gear
 
     @property
     def Value(self):
@@ -49,23 +53,32 @@ class Dice(object):
     def Tire(self):
         return self.selectedFace.Tire if self.selectedFace else None
 
+    def __repr__(self):
+        _ = [str(x.Value) for x in self.faces]
+        return '[{0}]'.format(', '.join(_))
+
 
 class DiceSet(object):
 
     def __init__(self, theNbrOfDices, theDices, theGear=Gear.DIRECT):
         assert theNbrOfDices == len(theDices)
         assert type(theDices) in (list, tuple)
-        assert all([dice.gear == theGear for dice in theDices])
+        assert all([dice.Gear == theGear for dice in theDices])
         self.nbrFaces = theNbrOfDices
         self.dices = theDices
         self.selectedFaces = None
-        self.gear = theGear
+        self._gear = theGear
 
     def roll(self):
         self.selectedFaces = []
         for dice in self.dices:
             self.selectedFaces.append(dice.roll())
+        print('dice roll [{0}]: {1}'.format(self.Gear, self.Value))
         return self.selectedFaces
+
+    @property
+    def Gear(self):
+        return self._gear
 
     @property
     def Value(self):
@@ -88,6 +101,10 @@ class DiceSet(object):
         result.Gas = sum(self.Gas)
         result.Tire = sum(self.Tire)
         return result
+
+    def __repr__(self):
+        _ = [str(x) for x in self.dices]
+        return '{0} * {1}'.format(self.Gear, ' * '.join(_))
 
 
 class Collection(object):

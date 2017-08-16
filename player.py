@@ -42,6 +42,7 @@ class Player(object):
 
     def roll(self, theGear):
         diceSet = self.Collection.getDice(theGear)
+        # print('dice-set: {0}'.format(diceSet))
         diceSet.roll()
         return diceSet.Result
 
