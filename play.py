@@ -64,7 +64,7 @@ class Play(object):
 
     def do_move(self, theLine):
         argos = shlex.split(theLine)
-        car = self._game.getPlayer(int(argos[1]))
+        car = self._game.getPlayerByIndex(int(argos[1]))
         adv, p, left = self._game.move(car)
         print('<{0}> ... {1}'.format(adv, car))
 
@@ -76,7 +76,7 @@ class Play(object):
             repeats = 1
         for x in range(repeats):
             for i in range(0, 3):
-                car = self._game.getPlayer(i)
+                car = self._game.getPlayerByIndex(i)
                 adv, p, left = self._game.move(car)
                 print('<{0}> ... {1}'.format(adv, car))
             if repeats > 1:
@@ -85,7 +85,7 @@ class Play(object):
 
     def do_status(self, theLine):
         for index in range(self._game.NbrOfPlayers):
-            print(self._game.getPlayer(index))
+            print(self._game.getPlayerByIndex(index))
 
 
 if __name__ == '__main__':

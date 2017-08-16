@@ -48,6 +48,10 @@ class Road(object):
         self._segments = []
         self._endAt = 0
 
+    @property
+    def Len(self):
+        return self._endAt
+
     def addSegment(self, theSegment):
         assert type(theSegment) == Segment
         assert theSegment.Len > 0

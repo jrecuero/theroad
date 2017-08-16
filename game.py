@@ -11,6 +11,12 @@ class Game(object):
         self._nbfOfPlayers = theNbrOfPlayers
         self._roadHandler = None
 
+    def _createPlayers(self):
+        for i in range(self._nbfOfPlayers):
+            p = player.Player('player{0}'.format(i), theUser=True if i == 0 else False)
+            p.init()
+            self._players.append(p)
+
     @property
     def Road(self):
         return self._road
@@ -31,14 +37,14 @@ class Game(object):
     def NbrOfPlayers(self):
         return self._nbfOfPlayers
 
-    def getPlayer(self, theIndex):
+    def getPlayerByIndex(self, theIndex):
         return self._players[theIndex]
 
-    def _createPlayers(self):
-        for i in range(self._nbfOfPlayers):
-            p = player.Player('player{0}'.format(i), theUser=True if i == 0 else False)
-            p.init()
-            self._players.append(p)
+    def getPlayerByName(self, theName):
+        for i, p in enumerate(self._players):
+            if p.Name == theName:
+                return i, p
+        return None, None
 
     def roll(self, thePlayer):
         pos = thePlayer.Pos
@@ -54,6 +60,4 @@ class Game(object):
     def init(self):
         self._createPlayers()
         self.Road = basicRoad()
-        self.RoadHandler = RoadHandler(self.Road)
-        for p in self._players:
-            self.RoadHandler.addPlayer(p)
+        self.RoadHandler = RoadHandler(self.Road, self._players)
