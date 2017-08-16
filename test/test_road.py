@@ -27,7 +27,6 @@ def roadTest(request, baseRoad):
 def test_Road(baseRoad):
     assert baseRoad._index == 0
     assert baseRoad._segments == []
-    assert baseRoad._road == {}
     assert baseRoad._endAt == 0
 
 
@@ -37,13 +36,12 @@ def test_addSegment(baseRoad, theLengths):
         baseRoad.addSegment(Segment(length))
     index = len(theLengths)
     assert len(baseRoad._segments) == index
-    assert len(baseRoad._road.keys()) == index
     assert baseRoad._endAt == sum(theLengths)
-    start, end = 0, 0
-    for i, v in enumerate(theLengths):
-        end += v
-        assert baseRoad._road[i] == {'start': start, 'end': end}
-        start += v
+    # start, end = 0, 0
+    # for i, v in enumerate(theLengths):
+    #     end += v
+    #     assert baseRoad._road[i] == {'start': start, 'end': end}
+    #     start += v
 
 
 @pytest.mark.parametrize('theLengths', [[10], [10, 20], [10, 20, 30]])
@@ -51,13 +49,12 @@ def test_create(baseRoad, theLengths):
     baseRoad.create(*theLengths)
     index = len(theLengths)
     assert len(baseRoad._segments) == index
-    assert len(baseRoad._road.keys()) == index
     assert baseRoad._endAt == sum(theLengths)
-    start, end = 0, 0
-    for i, v in enumerate(theLengths):
-        end += v
-        assert baseRoad._road[i] == {'start': start, 'end': end}
-        start += v
+    # start, end = 0, 0
+    # for i, v in enumerate(theLengths):
+    #     end += v
+    #     assert baseRoad._road[i] == {'start': start, 'end': end}
+    #     start += v
 
 
 @pytest.mark.parametrize('theLengths', [[10], [10, 20], [10, 20, 30]])
@@ -82,5 +79,5 @@ def test_segmentAt_full(roadTest, theLimits):
         for pos in range(trav, trav + nextEnd):
             i, seg = roadTest.segmentAt(pos)
             assert i == ind
-            assert seg['end'] == trav + nextEnd
+            assert seg.EndAt == trav + nextEnd
         trav += nextEnd

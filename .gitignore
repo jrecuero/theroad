@@ -96,3 +96,6 @@ $RECYCLE.BIN/
 
 # vim temporal files
 .*.swp
+
+# history file
+history.txt

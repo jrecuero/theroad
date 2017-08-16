@@ -9,6 +9,7 @@ class RoadHandler(object):
         self._players = {}
 
     def isFree(self, theRoadPos):
+        # print('isFree at {0}'.format(theRoadPos))
         if theRoadPos.isStartPos():
             return True
         for _, p in self._players.items():
@@ -34,7 +35,7 @@ class RoadHandler(object):
             return True
 
     def updatePlayer(self, thePlayer):
-        if thePlayer.Name in self._players.keys():
+        if thePlayer.Name not in self._players.keys():
             return False
         self._players[thePlayer.Name] = {'player': thePlayer, 'road_pos': thePlayer.RoadPos}
         return True

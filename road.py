@@ -74,6 +74,7 @@ class Road(object):
         del self._segments[theKey]
 
     def __iter__(self):
+        self._index = 0
         return self
 
     def __next__(self):
@@ -84,15 +85,19 @@ class Road(object):
         self._index += 1
         return _
 
-    def widthAt(self, thePos):
+    def segmentAt(self, thePos):
         for index, seg in enumerate(self):
             if thePos < seg.EndAt:
-                return index, seg.Width
+                return index, seg
+        return None, None
+
+    def widthAt(self, thePos):
+        index, seg = self.segmentAt(thePos)
+        return index, seg.Width if seg else None
 
     def gearAt(self, thePos):
-        for index, seg in enumerate(self):
-            if thePos < seg.EndAt:
-                return index, seg.Gear
+        index, seg = self.segmentAt(thePos)
+        return index, seg.Gear if seg else None
 
 
 class RoadPos(object):
@@ -109,9 +114,13 @@ class RoadPos(object):
     def Width(self):
         return self._width
 
+    def __repr__(self):
+        return "RoadPos: {0}/{1}".format(self.Pos, self.Width)
+
     def __eq__(self, theOther):
         if isinstance(theOther, self.__class__):
-            return self.Pos == theOther.Pos and self.Width == theOther.Width
+            # print('{0} __eq__ {1}'.format(self, theOther))
+            return (self.Pos == theOther.Pos) and (self.Width == theOther.Width)
         return NotImplemented
 
     def __ne__(self, theOther):
