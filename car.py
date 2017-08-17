@@ -12,6 +12,9 @@ class Car(object):
         assert self._user != self._ai
         self._collection = None
         self._runProc = None
+        self._preRollCb = None
+        self._rollCb = None
+        self._postRollCb = None
 
     @property
     def Name(self):
@@ -50,16 +53,33 @@ class Car(object):
         self._runProc = theValue
 
     def roll(self, theGear):
-        diceSet = self.Collection.getDice(theGear)
-        # print('dice-set: {0}'.format(diceSet))
-        diceSet.roll()
-        return diceSet.Result
+        if self._preRollCb:
+            diceSet = self._preRollCb(self, theGear)
+        else:
+            diceSet = self.Collection.getDice(theGear)
+
+        if self._rollCb:
+            result = self._rollCb(self, theGear)
+        else:
+            # print('dice-set: {0}'.format(diceSet))
+            diceSet.roll()
+            result = diceSet.Result
+
+        if self._postRollCb:
+            return self._postRollCb(self, theGear, result)
+        else:
+            return result
 
     def init(self, theRunProc):
         self._collection = basicCollection()
         self.Run = theRunProc()
         next(self.Run)
         self.Run.send(self)
+
+    def setCbs(self, thePreRollCb, theRollCb, thePostRollCb):
+        self._preRollCb = thePreRollCb if thePreRollCb else self._preRollCb
+        self._rollCb = theRollCb if theRollCb else self._rollCb
+        self._postRollCb = thePostRollCb if thePostRollCb else self._postRollCb
 
     def __repr__(self):
         side = 'user' if self.IsUser else 'ai'

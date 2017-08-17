@@ -27,15 +27,36 @@ class Dice(object):
     def __init__(self, theNbrOfFaces, theFaces, theGear=Gear.DIRECT):
         assert theNbrOfFaces == len(theFaces)
         assert type(theFaces) in (list, tuple)
-        self.nbrFaces = theNbrOfFaces
-        self.faces = theFaces
-        self.selectedFace = None
+        self._nbrFaces = theNbrOfFaces
+        self._faces = theFaces
+        self._faceUp = None
         self._gear = theGear
+        self._preRollCb = None
+        self._rollCb = None
+        self._postRollCb = None
 
     def roll(self):
-        index = random.randint(0, self.nbrFaces - 1)
-        self.selectedFace = self.faces[index]
-        return self.selectedFace
+        if self._preRollCb:
+            self._preRollCb(self)
+
+        if self._rollCb:
+            self.FaceUp = self._rollCb(self)
+        else:
+            index = random.randint(0, self._nbrFaces - 1)
+            self.FaceUp = self._faces[index]
+
+        if self._postRollCb:
+            return self._postRollCb(self)
+        else:
+            return self.FaceUp
+
+    @property
+    def FaceUp(self):
+        return self._faceUp
+
+    @FaceUp.setter
+    def FaceUp(self, theValue):
+        self._faceUp = theValue
 
     @property
     def Gear(self):
@@ -43,18 +64,23 @@ class Dice(object):
 
     @property
     def Value(self):
-        return self.selectedFace.Value if self.selectedFace else None
+        return self.FaceUp.Value if self.FaceUp else None
 
     @property
     def Gas(self):
-        return self.selectedFace.Gas if self.selectedFace else None
+        return self.FaceUp.Gas if self.FaceUp else None
 
     @property
     def Tire(self):
-        return self.selectedFace.Tire if self.selectedFace else None
+        return self.FaceUp.Tire if self.FaceUp else None
+
+    def setCbs(self, thePreRollCb, theRollCb, thePostRollCb):
+        self._preRollCb = thePreRollCb if thePreRollCb else self._preRollCb
+        self._rollCb = theRollCb if theRollCb else self._rollCb
+        self._postRollCb = thePostRollCb if thePostRollCb else self._postRollCb
 
     def __repr__(self):
-        _ = [str(x.Value) for x in self.faces]
+        _ = [str(x.Value) for x in self._faces]
         return '[{0}]'.format(', '.join(_))
 
 
@@ -64,17 +90,25 @@ class DiceSet(object):
         assert theNbrOfDices == len(theDices)
         assert type(theDices) in (list, tuple)
         assert all([dice.Gear == theGear for dice in theDices])
-        self.nbrFaces = theNbrOfDices
-        self.dices = theDices
-        self.selectedFaces = None
+        self._nbrOfDices = theNbrOfDices
+        self._dices = theDices
+        self._facesUp = None
         self._gear = theGear
 
     def roll(self):
-        self.selectedFaces = []
-        for dice in self.dices:
-            self.selectedFaces.append(dice.roll())
+        self.FacesUp = []
+        for dice in self._dices:
+            self.FacesUp.append(dice.roll())
         # print('dice roll [{0}]: {1}'.format(self.Gear, self.Value))
-        return self.selectedFaces
+        return self.FacesUp
+
+    @property
+    def FacesUp(self):
+        return self._facesUp
+
+    @FacesUp.setter
+    def FacesUp(self, theValue):
+        self._facesUp = theValue
 
     @property
     def Gear(self):
@@ -82,28 +116,29 @@ class DiceSet(object):
 
     @property
     def Value(self):
-        return [face.Value for face in self.selectedFaces] if self.selectedFaces else None
+        return [face.Value for face in self.FacesUp] if self.FacesUp else None
 
     @property
     def Gas(self):
-        return [face.Gas for face in self.selectedFaces] if self.selectedFaces else None
+        return [face.Gas for face in self.FacesUp] if self.FacesUp else None
 
     @property
     def Tire(self):
-        return [face.Tire for face in self.selectedFaces] if self.selectedFaces else None
+        return [face.Tire for face in self.FacesUp] if self.FacesUp else None
 
     @property
     def Result(self):
-        if self.selectedFaces is None:
+        if self.FacesUp is None:
             return None
         result = DiceResult()
+        result.Faces = self.FacesUp
         result.Value = sum(self.Value)
         result.Gas = sum(self.Gas)
         result.Tire = sum(self.Tire)
         return result
 
     def __repr__(self):
-        _ = [str(x) for x in self.dices]
+        _ = [str(x) for x in self._dices]
         return '{0} * {1}'.format(self.Gear, ' * '.join(_))
 
 
@@ -126,9 +161,18 @@ class Collection(object):
 class DiceResult(object):
 
     def __init__(self):
+        self._faces = None
         self._value = 0
         self._gas = 0
         self._tire = 0
+
+    @property
+    def Faces(self):
+        return self._faces
+
+    @Faces.setter
+    def Faces(self, theValue):
+        self._faces = theValue
 
     @property
     def Value(self):

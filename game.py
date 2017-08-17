@@ -11,6 +11,9 @@ class Game(object):
         self._nbfOfCars = theNbrOfCars
         self._roadHandler = None
         self._time = 0
+        self._preTickCb = None
+        self._tickCb = None
+        self._postTickCb = None
 
     def _createCars(self):
         for i in range(self._nbfOfCars):
@@ -49,6 +52,9 @@ class Game(object):
     def Time(self, theValue):
         self._time = theValue
 
+    def advanceTime(self, theAdvTime=1):
+        self.Time += theAdvTime
+
     def addCar(self, theCar):
         if self.getCarByName(theCar.Name) == (None, None):
             self._cars.append(theCar)
@@ -79,21 +85,33 @@ class Game(object):
     def sorted(self):
         return sorted(self._cars, key=lambda x: x.RoadPos.Pos, reverse=True)
 
+    def setCbs(self, thePreTickCb, theTickCb, thePostTickCb):
+        self._preTickCb = thePreTickCb if thePreTickCb else self._preTickCb
+        self._tickCb = theTickCb if theTickCb else self._tickCb
+        self._postTickCb = thePostTickCb if thePostTickCb else self._postTickCb
+
+    def tick(self, theNbrOfTicks=1):
+        for t in range(theNbrOfTicks):
+            if self._preTickCb:
+                self._preTickCb(self)
+
+            if self._tickCb:
+                self._tickCb(self)
+            else:
+                for c in self.sorted():
+                    adv, roadPos, advLeft = next(c.Run)
+                self.AdvanceTime()
+
+            if self._postTickCb:
+                self._postTickCb(self)
+
     def init(self):
         self._createCars()
         self.Road = basicRoad()
         self.RoadHandler = RoadHandler(self.Road, self._cars)
 
-    def tick(self):
-        for c in self.sorted():
-            adv, roadPos, advLeft = next(c.Run)
-            self.Time += 1
-
     def carProcess(self):
         _car = yield
         yield _car.RoadPos
         while True:
-            # adv = self.roll(_car).Value
-            # advLeft = self.RoadHandler.advanceCar(_car, adv)
-            # yield adv, _car.RoadPos, advLeft
             yield self.move(_car)
