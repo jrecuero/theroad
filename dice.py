@@ -24,10 +24,8 @@ class Face(object):
 
 class Dice(object):
 
-    def __init__(self, theNbrOfFaces, theFaces, theGear=Gear.DIRECT):
-        assert theNbrOfFaces == len(theFaces)
+    def __init__(self, theFaces, theGear=Gear.DIRECT):
         assert type(theFaces) in (list, tuple)
-        self._nbrFaces = theNbrOfFaces
         self._faces = theFaces
         self._faceUp = None
         self._gear = theGear
@@ -42,13 +40,21 @@ class Dice(object):
         if self._rollCb:
             self.FaceUp = self._rollCb(self)
         else:
-            index = random.randint(0, self._nbrFaces - 1)
-            self.FaceUp = self._faces[index]
+            index = random.randint(0, self.NbrOfFaces - 1)
+            self.FaceUp = self.Faces[index]
 
         if self._postRollCb:
             return self._postRollCb(self)
         else:
             return self.FaceUp
+
+    @property
+    def Faces(self):
+        return self._faces
+
+    @property
+    def NbrOfFaces(self):
+        return len(self._faces)
 
     @property
     def FaceUp(self):
@@ -86,11 +92,9 @@ class Dice(object):
 
 class DiceSet(object):
 
-    def __init__(self, theNbrOfDices, theDices, theGear=Gear.DIRECT):
-        assert theNbrOfDices == len(theDices)
+    def __init__(self, theDices, theGear=Gear.DIRECT):
         assert type(theDices) in (list, tuple)
         assert all([dice.Gear == theGear for dice in theDices])
-        self._nbrOfDices = theNbrOfDices
         self._dices = theDices
         self._facesUp = None
         self._gear = theGear
@@ -101,6 +105,14 @@ class DiceSet(object):
             self.FacesUp.append(dice.roll())
         # print('dice roll [{0}]: {1}'.format(self.Gear, self.Value))
         return self.FacesUp
+
+    @property
+    def Dices(self):
+        return self._dices
+
+    @property
+    def NbrOfDices(self):
+        return len(self._dices)
 
     @property
     def FacesUp(self):

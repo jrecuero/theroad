@@ -1,16 +1,17 @@
-from diceCollections import basicCollection
 from road import RoadPos
 
 
 class Car(object):
 
-    def __init__(self, theName, **kwargs):
+    def __init__(self, theName, theCollection, **kwargs):
+        assert theName
+        assert theCollection
         self._name = theName
+        self._collection = theCollection
         self._roadPos = kwargs.get('theRoadPos', RoadPos())
         self._user = kwargs.get('theUser', False)
         self._ai = kwargs.get('theAi', False if self.IsUser else True)
         assert self._user != self._ai
-        self._collection = None
         self._runProc = None
         self._preRollCb = None
         self._rollCb = None
@@ -71,7 +72,6 @@ class Car(object):
             return result
 
     def init(self, theRunProc):
-        self._collection = basicCollection()
         self.Run = theRunProc()
         next(self.Run)
         self.Run.send(self)

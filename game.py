@@ -1,24 +1,16 @@
-import car
-from roadCollections import basicRoad
 from roadHandler import RoadHandler
 
 
 class Game(object):
 
-    def __init__(self, theNbrOfCars=3):
+    def __init__(self):
         self._road = None
         self._cars = []
-        self._nbfOfCars = theNbrOfCars
         self._roadHandler = None
         self._time = 0
         self._preTickCb = None
         self._tickCb = None
         self._postTickCb = None
-
-    def _createCars(self):
-        for i in range(self._nbfOfCars):
-            c = car.Car('car{0}'.format(i), theUser=True if i == 0 else False)
-            self.addCar(c)
 
     @property
     def Road(self):
@@ -37,12 +29,12 @@ class Game(object):
         self._roadHandler = theRoadHandler
 
     @property
-    def NbrOfCars(self):
-        return self._nbfOfCars
-
-    @property
     def Cars(self):
         return self._cars
+
+    @property
+    def NbrOfCars(self):
+        return len(self.Cars)
 
     @property
     def Time(self):
@@ -100,14 +92,17 @@ class Game(object):
             else:
                 for c in self.sorted():
                     adv, roadPos, advLeft = next(c.Run)
-                self.AdvanceTime()
+                self.advanceTime()
 
             if self._postTickCb:
                 self._postTickCb(self)
 
-    def init(self):
-        self._createCars()
-        self.Road = basicRoad()
+    def init(self, theCars, theRoad):
+        assert theCars
+        assert theRoad
+        for _car in theCars:
+            self.addCar(_car)
+        self.Road = theRoad
         self.RoadHandler = RoadHandler(self.Road, self._cars)
 
     def carProcess(self):

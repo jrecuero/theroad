@@ -9,6 +9,9 @@ from fuzzyfinder import fuzzyfinder
 # from pygments.lexers.sql import SqlLexer
 import sys
 from game import Game
+from car import Car
+from roadCollections import basicRoad
+from diceCollections import basicCollection
 import shlex
 import time
 
@@ -65,13 +68,17 @@ class Play(object):
     def do_start(self, theLine):
         self.ToolbarMessage = '[STARTED] The Road Game'
         self._game = Game()
-        self._game.init()
+        _cars = []
+        for i in range(3):
+            _cars.append(Car('car{0}'.format(i), basicCollection(), theUser=True if i == 0 else False))
+        _road = basicRoad()
+        self._game.init(_cars, _road)
 
     def do_move(self, theLine):
         argos = shlex.split(theLine)
-        car = self._game.getCarByIndex(int(argos[1]))
-        adv, p, left = self._game.move(car)
-        print('<{0}> ... {1}'.format(adv, car))
+        c = self._game.getCarByIndex(int(argos[1]))
+        adv, p, left = self._game.move(c)
+        print('<{0}> ... {1}'.format(adv, c))
 
     def do_next(self, theLine):
         argos = shlex.split(theLine)
@@ -81,9 +88,9 @@ class Play(object):
             repeats = 1
         for x in range(repeats):
             # print('sorted: {0}'.format([x.Name for x in self._game.sorted()]))
-            # for car in self._game.sorted():
-            #     adv, p, left = self._game.move(car)
-            #     print('<{0}> ... {1}'.format(adv, car))
+            # for c in self._game.sorted():
+            #     adv, p, left = self._game.move(c)
+            #     print('<{0}> ... {1}'.format(adv, c))
             self._game.tick()
             self.do_status('sorted')
             if repeats > 1:
