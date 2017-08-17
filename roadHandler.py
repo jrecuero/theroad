@@ -1,60 +1,59 @@
 from road import RoadPos
-# import player
 
 
 class RoadHandler(object):
 
-    def __init__(self, theRoad, thePlayers):
+    def __init__(self, theRoad, theCars):
         self._road = theRoad
-        self._players = {}
-        for p in thePlayers:
-            self.addPlayer(p)
+        self._cars = {}
+        for p in theCars:
+            self.addCar(p)
 
     def isFree(self, theRoadPos):
         # print('isFree at {0}'.format(theRoadPos))
         if theRoadPos.isStartPos():
             return True
-        for _, p in self._players.items():
+        for _, p in self._cars.items():
             if p.RoadPos == theRoadPos:
                 return False
         return True
 
-    def playerInRoadPos(self, theRoadPos):
+    def carInRoadPos(self, theRoadPos):
         if theRoadPos.isStartPos():
             return True, None, None
-        for n, p in self._players.items():
+        for n, p in self._cars.items():
             if p.RoadPos == theRoadPos:
-                return False, n, p['player']
+                return False, n, p['car']
         return True, None, None
 
-    def addPlayer(self, thePlayer):
-        if thePlayer.Name in self._players.keys():
+    def addCar(self, theCar):
+        if theCar.Name in self._cars.keys():
             return False
-        elif not self.isFree(thePlayer.RoadPos):
+        elif not self.isFree(theCar.RoadPos):
             return False
         else:
-            self._players[thePlayer.Name] = thePlayer
+            self._cars[theCar.Name] = theCar
             return True
 
-    def movePlayerToRoadPos(self, thePlayer, theRoadPos):
-        found, n, p = self.playerInRoadPos(theRoadPos)
+    def moveCarToRoadPos(self, theCar, theRoadPos):
+        found, n, p = self.carInRoadPos(theRoadPos)
         if found:
-            return True if (n == thePlayer.Name and p == thePlayer) else False
+            return True if (n == theCar.Name and p == theCar) else False
         else:
-            thePlayer.RoadPos = theRoadPos
+            theCar.RoadPos = theRoadPos
             return True
 
-    def advancePlayer(self, thePlayer, theAdvance):
+    def advanceCar(self, theCar, theAdvance):
         while True:
-            nextPos = (thePlayer.RoadPos.Pos + 1) % self._road.Len
+            nextPos = (theCar.RoadPos.Pos + 1) % self._road.Len
             _, segmentWidth = self._road.widthAt(nextPos)
-            for newWidth, advPos in thePlayer.RoadPos.nextSideWidth(segmentWidth):
-                nextPos = (thePlayer.RoadPos.Pos + 1) % self._road.Len
+            for newWidth, advPos in theCar.RoadPos.nextSideWidth(segmentWidth):
+                nextPos = (theCar.RoadPos.Pos + 1) % self._road.Len
                 newRoadPos = RoadPos(nextPos, newWidth)
                 if self.isFree(newRoadPos):
                     theAdvance -= (advPos + 1)
                     if theAdvance >= 0:
-                        thePlayer.RoadPos = newRoadPos
+                        theCar.RoadPos = newRoadPos
 
                     if theAdvance > 0:
                         break

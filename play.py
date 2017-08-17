@@ -6,7 +6,7 @@ from prompt_toolkit.styles import style_from_dict
 from prompt_toolkit.token import Token
 # import click
 from fuzzyfinder import fuzzyfinder
-from pygments.lexers.sql import SqlLexer
+# from pygments.lexers.sql import SqlLexer
 import sys
 from game import Game
 import shlex
@@ -15,11 +15,12 @@ import time
 
 class GameCompleter(Completer):
 
-    GameKeywords = ['exit', 'start', 'move', 'next', 'status']
+    def __init__(self, theKeywords):
+        self._gameKeywords = theKeywords
 
     def get_completions(self, document, completeEvent):
         wordBeforeCursor = document.get_word_before_cursor(WORD=True)
-        matches = fuzzyfinder(wordBeforeCursor, GameCompleter.GameKeywords)
+        matches = fuzzyfinder(wordBeforeCursor, self._gameKeywords)
         for m in matches:
             yield Completion(m, start_position=-len(wordBeforeCursor))
 
@@ -36,6 +37,10 @@ class Play(object):
                          'status': self.do_status, }
         self._toolbarMessage = 'The Road Game'
         self._game = None
+
+    @property
+    def CmdKeys(self):
+        return self._cmdDict.keys()
 
     @property
     def ToolbarMessage(self):
@@ -64,7 +69,7 @@ class Play(object):
 
     def do_move(self, theLine):
         argos = shlex.split(theLine)
-        car = self._game.getPlayerByIndex(int(argos[1]))
+        car = self._game.getCarByIndex(int(argos[1]))
         adv, p, left = self._game.move(car)
         print('<{0}> ... {1}'.format(adv, car))
 
@@ -76,7 +81,7 @@ class Play(object):
             repeats = 1
         for x in range(repeats):
             for i in range(0, 3):
-                car = self._game.getPlayerByIndex(i)
+                car = self._game.getCarByIndex(i)
                 adv, p, left = self._game.move(car)
                 print('<{0}> ... {1}'.format(adv, car))
             if repeats > 1:
@@ -84,8 +89,8 @@ class Play(object):
                 time.sleep(1)
 
     def do_status(self, theLine):
-        for index in range(self._game.NbrOfPlayers):
-            print(self._game.getPlayerByIndex(index))
+        for index in range(self._game.NbrOfCars):
+            print(self._game.getCarByIndex(index))
 
 
 if __name__ == '__main__':
@@ -94,8 +99,8 @@ if __name__ == '__main__':
         userInput = prompt('The Road Game> ',
                            history=FileHistory('history.txt'),
                            auto_suggest=AutoSuggestFromHistory(),
-                           completer=GameCompleter(),
-                           lexer=SqlLexer,
+                           completer=GameCompleter(play.CmdKeys),
+                           # lexer=SqlLexer,
                            get_bottom_toolbar_tokens=play.getBottomToolbarTokens,
                            style=Play.test_style,
                            refresh_interval=1)

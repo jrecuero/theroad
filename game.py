@@ -1,21 +1,21 @@
-import player
+import car
 from roadCollections import basicRoad
 from roadHandler import RoadHandler
 
 
 class Game(object):
 
-    def __init__(self, theNbrOfPlayers=3):
+    def __init__(self, theNbrOfCars=3):
         self._road = None
-        self._players = []
-        self._nbfOfPlayers = theNbrOfPlayers
+        self._cars = []
+        self._nbfOfCars = theNbrOfCars
         self._roadHandler = None
 
-    def _createPlayers(self):
-        for i in range(self._nbfOfPlayers):
-            p = player.Player('player{0}'.format(i), theUser=True if i == 0 else False)
+    def _createCars(self):
+        for i in range(self._nbfOfCars):
+            p = car.Car('car{0}'.format(i), theUser=True if i == 0 else False)
             p.init()
-            self._players.append(p)
+            self._cars.append(p)
 
     @property
     def Road(self):
@@ -34,30 +34,30 @@ class Game(object):
         self._roadHandler = theRoadHandler
 
     @property
-    def NbrOfPlayers(self):
-        return self._nbfOfPlayers
+    def NbrOfCars(self):
+        return self._nbfOfCars
 
-    def getPlayerByIndex(self, theIndex):
-        return self._players[theIndex]
+    def getCarByIndex(self, theIndex):
+        return self._cars[theIndex]
 
-    def getPlayerByName(self, theName):
-        for i, p in enumerate(self._players):
+    def getCarByName(self, theName):
+        for i, p in enumerate(self._cars):
             if p.Name == theName:
                 return i, p
         return None, None
 
-    def roll(self, thePlayer):
-        pos = thePlayer.Pos
+    def roll(self, theCar):
+        pos = theCar.Pos
         _, segment = self.Road.segmentAt(pos)
         g = segment.Gear
-        return thePlayer.roll(g)
+        return theCar.roll(g)
 
-    def move(self, thePlayer):
-        adv = self.roll(thePlayer).Value
-        advLeft = self.RoadHandler.advancePlayer(thePlayer, adv)
-        return adv, thePlayer.RoadPos, advLeft
+    def move(self, theCar):
+        adv = self.roll(theCar).Value
+        advLeft = self.RoadHandler.advanceCar(theCar, adv)
+        return adv, theCar.RoadPos, advLeft
 
     def init(self):
-        self._createPlayers()
+        self._createCars()
         self.Road = basicRoad()
-        self.RoadHandler = RoadHandler(self.Road, self._players)
+        self.RoadHandler = RoadHandler(self.Road, self._cars)

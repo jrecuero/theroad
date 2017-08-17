@@ -2,7 +2,7 @@ from diceCollections import basicCollection
 from road import RoadPos
 
 
-class Player(object):
+class Car(object):
 
     def __init__(self, theName, **kwargs):
         self._name = theName

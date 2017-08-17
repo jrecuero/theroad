@@ -89,6 +89,9 @@ class Road(object):
         self._index += 1
         return _
 
+    def __len__(self):
+        return len(self._segments)
+
     def segmentAt(self, thePos):
         for index, seg in enumerate(self):
             if thePos < seg.EndAt:
