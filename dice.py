@@ -1,5 +1,8 @@
 import random
 from gear import Gear
+import loggerator
+
+logger = loggerator.getLoggerator('DICE')
 
 
 class Face(object):
@@ -103,7 +106,7 @@ class DiceSet(object):
         self.FacesUp = []
         for dice in self._dices:
             self.FacesUp.append(dice.roll())
-        # print('dice roll [{0}]: {1}'.format(self.Gear, self.Value))
+        logger.debug('dice roll [{0}]: {1}'.format(self.Gear, self.Value))
         return self.FacesUp
 
     @property

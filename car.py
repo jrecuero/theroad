@@ -1,4 +1,5 @@
 from road import RoadPos
+import loggerator
 
 
 class Car(object):
@@ -16,6 +17,7 @@ class Car(object):
         self._preRollCb = None
         self._rollCb = None
         self._postRollCb = None
+        self._logger = loggerator.getLoggerator('CAR')
 
     @property
     def Name(self):
@@ -62,7 +64,7 @@ class Car(object):
         if self._rollCb:
             result = self._rollCb(self, theGear)
         else:
-            # print('dice-set: {0}'.format(diceSet))
+            self._logger.debug('dice-set: {0}'.format(diceSet))
             diceSet.roll()
             result = diceSet.Result
 

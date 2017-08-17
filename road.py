@@ -1,4 +1,7 @@
 from gear import Gear
+import loggerator
+
+logger = loggerator.getLoggerator('ROAD')
 
 
 class Segment(object):
@@ -131,7 +134,7 @@ class RoadPos(object):
 
     def __eq__(self, theOther):
         if isinstance(theOther, self.__class__):
-            # print('{0} __eq__ {1}'.format(self, theOther))
+            logger.debug('{0} __eq__ {1}'.format(self, theOther))
             return (self.Pos == theOther.Pos) and (self.Width == theOther.Width)
         return NotImplemented
 

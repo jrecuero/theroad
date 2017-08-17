@@ -14,6 +14,7 @@ from roadCollections import basicRoad
 from diceCollections import basicCollection
 import shlex
 import time
+import loggerator
 
 
 class GameCompleter(Completer):
@@ -40,6 +41,7 @@ class Play(object):
                          'status': self.do_status, }
         self._toolbarMessage = 'The Road Game'
         self._game = None
+        self._logger = loggerator.getLoggerator('PLAY')
 
     @property
     def CmdKeys(self):
@@ -78,7 +80,7 @@ class Play(object):
         argos = shlex.split(theLine)
         c = self._game.getCarByIndex(int(argos[1]))
         adv, p, left = self._game.move(c)
-        print('<{0}> ... {1}'.format(adv, c))
+        self._logger.debug('<{0}> ... {1}'.format(adv, c))
 
     def do_next(self, theLine):
         argos = shlex.split(theLine)
@@ -87,23 +89,19 @@ class Play(object):
         else:
             repeats = 1
         for x in range(repeats):
-            # print('sorted: {0}'.format([x.Name for x in self._game.sorted()]))
-            # for c in self._game.sorted():
-            #     adv, p, left = self._game.move(c)
-            #     print('<{0}> ... {1}'.format(adv, c))
             self._game.tick()
             self.do_status('sorted')
             if repeats > 1:
-                print('----- END ROUND {0} -----'.format(x + 1))
+                self._logger.debug('----- END ROUND {0} -----'.format(x + 1))
                 time.sleep(1)
 
     def do_status(self, theLine):
         if 'sorted' in theLine:
             for c in self._game.sorted():
-                print(c)
+                self._logger.display(c)
         else:
             for c in self._game.Cars:
-                print(c)
+                self._logger.display(c)
 
 
 if __name__ == '__main__':
@@ -118,7 +116,7 @@ if __name__ == '__main__':
                            style=Play.test_style,
                            refresh_interval=1)
         # click.echo_via_pager(userInput)
-        print(userInput)
+        play._logger.debug(userInput)
         # message = click.edit()
         if userInput:
             cmd = userInput.split()[0]

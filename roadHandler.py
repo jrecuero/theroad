@@ -1,4 +1,5 @@
 from road import RoadPos
+import loggerator
 
 
 class RoadHandler(object):
@@ -6,11 +7,12 @@ class RoadHandler(object):
     def __init__(self, theRoad, theCars):
         self._road = theRoad
         self._cars = {}
+        self._logger = loggerator.getLoggerator('ROAD-HANDLER')
         for p in theCars:
             self.addCar(p)
 
     def isFree(self, theRoadPos):
-        # print('isFree at {0}'.format(theRoadPos))
+        self._logger.debug('isFree at {0}'.format(theRoadPos))
         if theRoadPos.isStartPos():
             return True
         for _, p in self._cars.items():
