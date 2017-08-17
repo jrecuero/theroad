@@ -10,12 +10,12 @@ class Game(object):
         self._cars = []
         self._nbfOfCars = theNbrOfCars
         self._roadHandler = None
+        self._time = 0
 
     def _createCars(self):
         for i in range(self._nbfOfCars):
-            p = car.Car('car{0}'.format(i), theUser=True if i == 0 else False)
-            p.init()
-            self._cars.append(p)
+            c = car.Car('car{0}'.format(i), theUser=True if i == 0 else False)
+            self.addCar(c)
 
     @property
     def Road(self):
@@ -37,6 +37,25 @@ class Game(object):
     def NbrOfCars(self):
         return self._nbfOfCars
 
+    @property
+    def Cars(self):
+        return self._cars
+
+    @property
+    def Time(self):
+        return self._time
+
+    @Time.setter
+    def Time(self, theValue):
+        self._time = theValue
+
+    def addCar(self, theCar):
+        if self.getCarByName(theCar.Name) == (None, None):
+            self._cars.append(theCar)
+            theCar.init(self.carProcess)
+            return True
+        return False
+
     def getCarByIndex(self, theIndex):
         return self._cars[theIndex]
 
@@ -57,7 +76,24 @@ class Game(object):
         advLeft = self.RoadHandler.advanceCar(theCar, adv)
         return adv, theCar.RoadPos, advLeft
 
+    def sorted(self):
+        return sorted(self._cars, key=lambda x: x.RoadPos.Pos, reverse=True)
+
     def init(self):
         self._createCars()
         self.Road = basicRoad()
         self.RoadHandler = RoadHandler(self.Road, self._cars)
+
+    def tick(self):
+        for c in self.sorted():
+            adv, roadPos, advLeft = next(c.Run)
+            self.Time += 1
+
+    def carProcess(self):
+        _car = yield
+        yield _car.RoadPos
+        while True:
+            # adv = self.roll(_car).Value
+            # advLeft = self.RoadHandler.advanceCar(_car, adv)
+            # yield adv, _car.RoadPos, advLeft
+            yield self.move(_car)

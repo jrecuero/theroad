@@ -109,9 +109,10 @@ class Road(object):
 
 class RoadPos(object):
 
-    def __init__(self, thePos=0, theWidth=0):
+    def __init__(self, thePos=0, theWidth=0, theRacePos=0):
         self._pos = thePos
         self._width = theWidth
+        self._racePos = theRacePos
 
     @property
     def Pos(self):
@@ -121,8 +122,12 @@ class RoadPos(object):
     def Width(self):
         return self._width
 
+    @property
+    def RacePos(self):
+        return self._racePos
+
     def __repr__(self):
-        return "RoadPos: {0}/{1}".format(self.Pos, self.Width)
+        return "RoadPos: {0}-{1}/{2}".format(self.Pos, self.RacePos, self.Width)
 
     def __eq__(self, theOther):
         if isinstance(theOther, self.__class__):

@@ -45,11 +45,11 @@ class RoadHandler(object):
 
     def advanceCar(self, theCar, theAdvance):
         while True:
-            nextPos = (theCar.RoadPos.Pos + 1) % self._road.Len
+            nextPos = (theCar.RoadPos.RacePos + 1) % self._road.Len
             _, segmentWidth = self._road.widthAt(nextPos)
             for newWidth, advPos in theCar.RoadPos.nextSideWidth(segmentWidth):
-                nextPos = (theCar.RoadPos.Pos + 1) % self._road.Len
-                newRoadPos = RoadPos(nextPos, newWidth)
+                nextPos = (theCar.RoadPos.RacePos + 1) % self._road.Len
+                newRoadPos = RoadPos(nextPos, newWidth, theCar.RoadPos.RacePos + 1)
                 if self.isFree(newRoadPos):
                     theAdvance -= (advPos + 1)
                     if theAdvance >= 0:

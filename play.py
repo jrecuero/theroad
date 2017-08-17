@@ -80,17 +80,23 @@ class Play(object):
         else:
             repeats = 1
         for x in range(repeats):
-            for i in range(0, 3):
-                car = self._game.getCarByIndex(i)
-                adv, p, left = self._game.move(car)
-                print('<{0}> ... {1}'.format(adv, car))
+            # print('sorted: {0}'.format([x.Name for x in self._game.sorted()]))
+            # for car in self._game.sorted():
+            #     adv, p, left = self._game.move(car)
+            #     print('<{0}> ... {1}'.format(adv, car))
+            self._game.tick()
+            self.do_status('sorted')
             if repeats > 1:
                 print('----- END ROUND {0} -----'.format(x + 1))
                 time.sleep(1)
 
     def do_status(self, theLine):
-        for index in range(self._game.NbrOfCars):
-            print(self._game.getCarByIndex(index))
+        if 'sorted' in theLine:
+            for c in self._game.sorted():
+                print(c)
+        else:
+            for c in self._game.Cars:
+                print(c)
 
 
 if __name__ == '__main__':

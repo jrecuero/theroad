@@ -73,7 +73,7 @@ class DiceSet(object):
         self.selectedFaces = []
         for dice in self.dices:
             self.selectedFaces.append(dice.roll())
-        print('dice roll [{0}]: {1}'.format(self.Gear, self.Value))
+        # print('dice roll [{0}]: {1}'.format(self.Gear, self.Value))
         return self.selectedFaces
 
     @property

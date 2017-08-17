@@ -11,6 +11,7 @@ class Car(object):
         self._ai = kwargs.get('theAi', False if self.IsUser else True)
         assert self._user != self._ai
         self._collection = None
+        self._runProc = None
 
     @property
     def Name(self):
@@ -40,15 +41,26 @@ class Car(object):
     def IsAi(self):
         return self._ai
 
+    @property
+    def Run(self):
+        return self._runProc
+
+    @Run.setter
+    def Run(self, theValue):
+        self._runProc = theValue
+
     def roll(self, theGear):
         diceSet = self.Collection.getDice(theGear)
         # print('dice-set: {0}'.format(diceSet))
         diceSet.roll()
         return diceSet.Result
 
-    def init(self):
+    def init(self, theRunProc):
         self._collection = basicCollection()
+        self.Run = theRunProc()
+        next(self.Run)
+        self.Run.send(self)
 
     def __repr__(self):
         side = 'user' if self.IsUser else 'ai'
-        return '[{0}] {1} road: {2} | {3}'.format(side, self.Name, self.RoadPos.Pos, self.RoadPos.Width)
+        return '[{0}] {1} road: {2}'.format(side, self.Name, self.RoadPos)
