@@ -116,7 +116,7 @@ if __name__ == '__main__':
                            style=Play.test_style,
                            refresh_interval=1)
         # click.echo_via_pager(userInput)
-        play._logger.debug(userInput)
+        play._logger.trace(userInput)
         # message = click.edit()
         if userInput:
             cmd = userInput.split()[0]
